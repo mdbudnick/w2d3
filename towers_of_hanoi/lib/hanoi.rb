@@ -3,6 +3,7 @@ class Game
   attr_reader :towers_hash
 
   def initialize
+    # Got too fancy here!
     @towers = Array.new(3) { Array.new(3) }
     towers[0] = [1,2,3]
     @towers_hash = { 'A' => 0, 'B' => 1, 'C' => 2 }
@@ -46,15 +47,20 @@ class Game
   def move(first, second)
     move_disk_idx = towers[first].find_index { |el| el.is_a?(Fixnum) }
     move_disk = towers[first][move_disk_idx]
-    towers[second].each_with_index do |el, index|
-      next if el.nil? unless index == 2
-      if (el.nil? && index == 2) || move_disk < el
-        towers[second][index-1] = move_disk unless el.nil?
-        towers[second][index] = move_disk unless !el.nil?
-        towers[first][move_disk_idx] = nil
+    if towers[second].all? { |el| el.nil?}
+      towers[second][2] = move_disk
+      towers[first][move_disk_idx] = nil
+    else
+      towers[second].each_with_index do |el, index|
+        next if el.nil?
+        return if move_disk > el
+        if move_disk < el
+          towers[second][index-1] = move_disk
+          towers[first][move_disk_idx] = nil
         break
+        end
+
       end
-      return if move_disk > el
     end
 
     towers

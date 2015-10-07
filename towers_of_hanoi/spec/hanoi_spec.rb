@@ -17,15 +17,33 @@ describe Game do
     end
 
     it "renders the columns in the console" do
-      expect(game.render).to eq(" |1|  | |  | | \n |2|  | |  | | \n |3|  | |  | | \n")
+      expect(game.render).to eq(" |1|  | |  | | \n |2|  | |  | | \n |3|  | |  | | \n  A    B    C  \n")
     end
-    it "asks for an input from the player"
+
+    # it "starts game#play" do
+    #   expect(game2).to receive{:play}
+    #   let(:game2) { Game.new }
+    # end
   end
 
 
-  context "Player Input" do
-    it ""
+  describe "#move" do
+    it "moves to another tower" do
+      expect(game.move(0, 1)).to eq([[nil, 2, 3], [nil, nil, 1], [nil, nil, nil]])
+    end
+
+    it "doesn't move to another tower with a smaller disc" do
+      game_invalid_move = Game.new
+      game_invalid_move.towers[0] = [nil, 2, 3]
+      game_invalid_move.towers[1] = [nil, nil, 1]
+      expect{game_invalid_move.move(0,1)}.to_not change{game_invalid_move.towers}
+    end
   end
 
-  it "finishes when a tower is made in last column"
+  it "finishes when a tower is made in last column" do
+    game_won = Game.new
+    game_won.towers[2] = [1,2,3]
+
+    expect(game_won.won?).to be true
+  end
 end
